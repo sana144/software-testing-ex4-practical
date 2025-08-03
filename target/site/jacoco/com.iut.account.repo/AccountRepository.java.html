@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">software-testing</a> &gt; <a href="index.source.html" class="el_package">com.iut.account.repo</a> &gt; <span class="el_source">AccountRepository.java</span></div><h1>AccountRepository.java</h1><pre class="source lang-java linenums">
+package com.iut.account.repo;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.iut.Database;
+import com.iut.Repository;
+import com.iut.account.model.Account;
+
+public class AccountRepository implements Repository&lt;Account, String&gt; {
+
+    private Connection connection;
+
+<span class="fc" id="L19">    public AccountRepository() throws SQLException {</span>
+<span class="fc" id="L20">        connection = Database.getConnection();</span>
+<span class="fc" id="L21">        connection.createStatement().execute(&quot;CREATE TABLE IF NOT EXISTS bank_account (&quot;</span>
+                + &quot;id VARCHAR PRIMARY KEY,&quot;
+                + &quot;balance INT,&quot;
+                + &quot;user_id VARCHAR,&quot;
+                + &quot;FOREIGN KEY (user_id) REFERENCES users(id)&quot;
+                + &quot;);&quot;);
+<span class="fc" id="L27">    }</span>
+
+    @Override
+    public boolean save(Account input) {
+<span class="fc" id="L31">        String insertSQL = &quot;INSERT INTO bank_account (id, balance, user_id) VALUES (?, ?, ?)&quot;;</span>
+<span class="fc" id="L32">        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {</span>
+<span class="fc" id="L33">            pstmt.setString(1, input.getId());</span>
+<span class="fc" id="L34">            pstmt.setInt(2, input.getBalance());</span>
+<span class="fc" id="L35">            pstmt.setString(3, input.getUserId());</span>
+<span class="fc" id="L36">            pstmt.executeUpdate();</span>
+<span class="fc" id="L37">            return true;</span>
+<span class="nc" id="L38">        } catch (SQLException exception) {</span>
+<span class="nc" id="L39">            exception.printStackTrace();</span>
+<span class="nc" id="L40">            return false;</span>
+        }
+    }
+
+    @Override
+    public boolean update(Account input) {
+<span class="nc" id="L46">        String updateSQL = &quot;UPDATE bank_account SET balance = ?, user_id = ? WHERE id = ?&quot;;</span>
+<span class="nc" id="L47">        try (PreparedStatement pstmt = connection.prepareStatement(updateSQL)) {</span>
+<span class="nc" id="L48">            pstmt.setInt(1, input.getBalance());</span>
+<span class="nc" id="L49">            pstmt.setString(2, input.getUserId());</span>
+<span class="nc" id="L50">            pstmt.setString(3, input.getId());</span>
+<span class="nc" id="L51">            pstmt.executeUpdate();</span>
+<span class="nc" id="L52">            return true;</span>
+<span class="nc" id="L53">        } catch (SQLException exception) {</span>
+<span class="nc" id="L54">            exception.printStackTrace();</span>
+<span class="nc" id="L55">            return false;</span>
+        }
+    }
+
+    @Override
+    public boolean existsById(String id) {
+<span class="fc" id="L61">        String querySQL = &quot;SELECT COUNT(*) FROM bank_account WHERE id = ?&quot;;</span>
+<span class="fc" id="L62">        try (PreparedStatement pstmt = connection.prepareStatement(querySQL)) {</span>
+<span class="fc" id="L63">            pstmt.setString(1, id);</span>
+<span class="fc" id="L64">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc" id="L65">            rs.next();</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">            return rs.getInt(1) &gt; 0;</span>
+<span class="nc" id="L67">        } catch (SQLException e) {</span>
+<span class="nc" id="L68">            e.printStackTrace();</span>
+<span class="nc" id="L69">            return false;</span>
+        }
+    }
+
+    @Override
+    public Account findById(String id) {
+<span class="fc" id="L75">        String selectSQL = &quot;SELECT * FROM bank_account WHERE id = ?&quot;;</span>
+<span class="fc" id="L76">        try (PreparedStatement pstmt = connection.prepareStatement(selectSQL)) {</span>
+<span class="fc" id="L77">            pstmt.setString(1, id);</span>
+<span class="fc" id="L78">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L80">                return new Account(</span>
+<span class="fc" id="L81">                        rs.getString(&quot;id&quot;),</span>
+<span class="fc" id="L82">                        rs.getInt(&quot;balance&quot;),</span>
+<span class="fc" id="L83">                        rs.getString(&quot;user_id&quot;)</span>
+                );
+            }
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L87">            e.printStackTrace();</span>
+<span class="nc" id="L88">        }</span>
+<span class="nc" id="L89">        return null;</span>
+    }
+
+    @Override
+    public List&lt;Account&gt; findAll() {
+<span class="nc" id="L94">        String selectSQL = &quot;SELECT * FROM bank_account&quot;;</span>
+<span class="nc" id="L95">        List&lt;Account&gt; accounts = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L96">        try (PreparedStatement pstmt = connection.prepareStatement(selectSQL)) {</span>
+<span class="nc" id="L97">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L99">                accounts.add(new Account(</span>
+<span class="nc" id="L100">                        rs.getString(&quot;id&quot;),</span>
+<span class="nc" id="L101">                        rs.getInt(&quot;balance&quot;),</span>
+<span class="nc" id="L102">                        rs.getString(&quot;user_id&quot;)</span>
+                ));
+            }
+<span class="nc" id="L105">        } catch (SQLException e) {</span>
+<span class="nc" id="L106">            e.printStackTrace();</span>
+<span class="nc" id="L107">        }</span>
+<span class="nc" id="L108">        return accounts;</span>
+    }
+
+    @Override
+    public boolean delete(String id) {
+<span class="fc" id="L113">        String deleteSQL = &quot;DELETE FROM bank_account WHERE id = ?&quot;;</span>
+<span class="fc" id="L114">        try (PreparedStatement pstmt = connection.prepareStatement(deleteSQL)) {</span>
+<span class="fc" id="L115">            pstmt.setString(1, id);</span>
+<span class="fc" id="L116">            pstmt.executeUpdate();</span>
+<span class="fc" id="L117">            return true;</span>
+<span class="nc" id="L118">        } catch (SQLException e) {</span>
+<span class="nc" id="L119">            e.printStackTrace();</span>
+<span class="nc" id="L120">            return false;</span>
+        }
+    }
+
+    public List&lt;Account&gt; findByUserId(String userId) {
+<span class="fc" id="L125">        String selectSQL = &quot;SELECT * FROM bank_account where user_id = ?&quot;;</span>
+<span class="fc" id="L126">        List&lt;Account&gt; accounts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L127">        try (PreparedStatement statement = connection.prepareStatement(selectSQL)) {</span>
+<span class="fc" id="L128">            statement.setString(1, userId);</span>
+<span class="fc" id="L129">            ResultSet resultSet = statement.executeQuery();</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            while (resultSet.next()) {</span>
+<span class="fc" id="L131">                accounts.add(new Account(resultSet.getString(&quot;id&quot;),</span>
+<span class="fc" id="L132">                        resultSet.getInt(&quot;balance&quot;),</span>
+<span class="fc" id="L133">                        resultSet.getString(&quot;user_id&quot;)));</span>
+            }
+<span class="nc" id="L135">        } catch (SQLException e) {</span>
+<span class="nc" id="L136">            e.printStackTrace();</span>
+<span class="nc" id="L137">            return accounts;</span>
+<span class="fc" id="L138">        }</span>
+<span class="fc" id="L139">        return accounts;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

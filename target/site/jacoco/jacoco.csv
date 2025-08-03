@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+software-testing,com.iut.user.service,UserService,15,23,3,1,4,6,3,3,1,3
+software-testing,com.iut,Database,3,12,1,3,1,3,2,2,1,1
+software-testing,com.iut,BankService,0,58,1,1,0,14,1,7,0,7
+software-testing,com.iut.user.model,User,9,55,0,0,3,20,2,9,2,9
+software-testing,com.iut.account.service,AccountService,0,198,0,22,0,44,0,20,0,9
+software-testing,com.iut.account.model,Account,20,72,3,3,8,20,4,9,2,8
+software-testing,com.iut.user.repo,UserRepository,130,118,5,3,43,29,7,4,3,4
+software-testing,com.iut.account.repo,AccountRepository,101,160,5,5,38,43,6,7,2,6

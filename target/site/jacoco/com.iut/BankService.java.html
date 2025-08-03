@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BankService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">software-testing</a> &gt; <a href="index.source.html" class="el_package">com.iut</a> &gt; <span class="el_source">BankService.java</span></div><h1>BankService.java</h1><pre class="source lang-java linenums">package com.iut;
+
+import com.iut.account.model.Account;
+import com.iut.account.service.AccountService;
+import com.iut.user.model.User;
+import com.iut.user.service.UserService;
+
+import java.util.List;
+import java.util.UUID;
+
+public class BankService {
+
+    private final UserService userService;
+    private final AccountService accountService;
+
+<span class="fc" id="L16">    public BankService(final UserService userService, final AccountService accountService) {</span>
+<span class="fc" id="L17">        this.userService = userService;</span>
+<span class="fc" id="L18">        this.accountService = accountService;</span>
+<span class="fc" id="L19">    }</span>
+
+    public boolean registerNewUser(User user) {
+<span class="fc" id="L22">        boolean created = userService.createUser(user);</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        if (created) {</span>
+<span class="fc" id="L24">            String defaultAccountId = UUID.randomUUID().toString();</span>
+<span class="fc" id="L25">            accountService.createAccount(defaultAccountId, 0, user.getId());</span>
+        }
+<span class="fc" id="L27">        return created;</span>
+    }
+
+    public User getUser(String userId) {
+<span class="fc" id="L31">        return userService.getUser(userId);</span>
+    }
+
+    public boolean addAccountToUser(String userId, Account account) {
+<span class="fc" id="L35">        return accountService.createAccount(account.getId(), account.getBalance(), userId);</span>
+    }
+
+    public Account getAccount(String accountId) {
+<span class="fc" id="L39">        return accountService.getAccount(accountId);</span>
+    }
+
+    public List&lt;Account&gt; getUserAccounts(String userId) {
+<span class="fc" id="L43">        return accountService.getUserAccounts(userId);</span>
+    }
+
+    public boolean deleteAccount(String accountId) {
+<span class="fc" id="L47">        return accountService.deleteAccount(accountId);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

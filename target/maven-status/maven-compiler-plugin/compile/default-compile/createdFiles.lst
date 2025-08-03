@@ -1,0 +1,9 @@
+com\iut\account\service\AccountService.class
+com\iut\account\repo\AccountRepository.class
+com\iut\Repository.class
+com\iut\user\repo\UserRepository.class
+com\iut\user\service\UserService.class
+com\iut\account\model\Account.class
+com\iut\user\model\User.class
+com\iut\Database.class
+com\iut\BankService.class
