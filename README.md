@@ -1,5 +1,5 @@
 # software-testing-ex4-practical
-# Software Testing Project
+<!-- # Software Testing Project -->
 
 This project is for practicing Continuous Integration with Jenkins.
 
